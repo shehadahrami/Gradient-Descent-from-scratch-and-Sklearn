@@ -1,0 +1,66 @@
+import matplotlib.pyplot as plt
+import numpy as np
+x_points = np.array([1,5,4,7,6,8,9,2,6,8,3,6,7,8,3,8,4,2])
+y_points = np.array([1,5,4,7,6,8,9,2,6,6,3,7,8,3,3,4,5,6])
+
+
+
+m =0
+b = 0
+y = lambda x: m*x + b
+
+def plot(data_points, y):
+    x_values = [i for i in range(int(min(data_points))-1, int(max(data_points))+2)]
+    y_values = [y(x) for x in x_values]
+    plt.plot(x_values,y_values,'r')
+    plt.show()
+
+
+def gradient(y,x_points,y_points):
+
+
+    total1=0
+    total2=0
+    for i in range(1, len(x_points)):
+        total1+= y(x_points[i]) - y_points[i]
+        total2+= (y(x_points[i]) - y_points[i]) * x_points[i]
+    return total1/len(x_points), total2/len(x_points)
+
+for i in range(5000):
+
+    s1,s2 = gradient(y,x_points,y_points)
+
+    m = m - .001*s2
+    b = b - .001*s1
+
+
+
+plt.plot(x_points,y_points,marker='.',linestyle = 'None')
+plot(x_points, y)
+plt.show()
+
+print(m,b)
+
+from sklearn.linear_model import SGDRegressor
+from sklearn import linear_model
+
+X = np.array([1,5,4,7,6,8,9,2,6,8,3,6,7,8,3,8,4,2])
+
+y = np.array([1,5,4,7,6,8,9,2,6,6,3,7,8,3,3,4,5,6])
+clf = linear_model.SGDRegressor(alpha=.001,n_iter=5000)
+clf.fit(X.reshape(-1,1),y)
+
+slope = clf.coef_
+inter = clf.intercept_
+
+print(slope)
+print(inter)
+
+x_numbers = np.arange(0,12)
+y_sgd = slope*x_numbers + inter
+
+
+plt.plot(X,y,marker='.',linestyle = 'None')
+plt.plot(x_numbers,y_sgd)
+plt.show()
+
